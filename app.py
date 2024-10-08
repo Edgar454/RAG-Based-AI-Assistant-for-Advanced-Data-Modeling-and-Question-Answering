@@ -1,7 +1,7 @@
 import gradio as gr
 from rag_system import RAG_System
 
-rag_system = RAG_System(data_directory = r"M:\Youtube_Course\Personnal_projects\LLM_and_NLP\RAG_Research\Documents",
+rag_system = RAG_System(data_directory = r"M:/Youtube_Course/Personnal_projects/LLM_and_NLP/RAG_Research/Documents",
                         db_path = "faiss.db")
 
 def respond_with_error_handling(question, history):

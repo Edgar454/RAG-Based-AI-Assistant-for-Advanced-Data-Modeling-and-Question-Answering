@@ -1,0 +1,59 @@
+Q: What is feature engineering, and why is it important in machine learning?
+A: Feature engineering involves creating features from raw data to help machine learning models perform better.
+
+Q: How does binarization transform numerical features?
+A: Binarization converts numerical features into binary values, usually 0 and 1, based on a threshold.
+
+Q: Explain the differences between one-hot encoding and dummy coding.
+A: One-hot encoding creates a binary feature for each category, while dummy coding typically excludes one category to avoid multicollinearity.
+
+Q: What is the role of PCA in dimensionality reduction?
+A: PCA reduces dimensionality by transforming features into a set of linearly uncorrelated variables called principal components.
+
+Q: How does k-means clustering help in featurization for classification tasks?
+A: K-means clustering groups data into clusters, which can be used as new features for classification models.
+
+Q: Define the bag-of-words model and its application in text processing.
+A: The bag-of-words model represents text as a collection of word counts, used for text classification or clustering.
+
+Q: What is TF-IDF, and how does it improve upon the bag-of-words model?
+A: TF-IDF adjusts the bag-of-words model by giving less weight to common words and more to rare, informative words.
+
+Q: What is interaction feature engineering, and when should it be used?
+A: Interaction feature engineering creates new features by combining existing ones, useful when feature relationships affect predictions.
+
+Q: Explain feature hashing and its application.
+A: Feature hashing maps features into a lower-dimensional space using a hash function, useful for handling large feature sets.
+
+Q: How do decision trees handle categorical variables?
+A: Decision trees can handle categorical variables by splitting data based on categories, without the need for dummy variables.
+
+Q: What is cross-validation, and why is it important for model evaluation?
+A: Cross-validation splits data into training and validation sets to ensure model performance is robust and not overfitted.
+
+Q: Explain the bias-variance tradeoff in supervised learning.
+A: The bias-variance tradeoff balances model simplicity (bias) and complexity (variance) to avoid underfitting and overfitting.
+
+Q: How is LASSO used for feature selection in regression?
+A: LASSO adds a penalty to regression coefficients, shrinking some to zero, effectively selecting features.
+
+Q: What are the strengths and limitations of random forests?
+A: Random forests reduce overfitting by averaging multiple decision trees, but they can be slow for large datasets.
+
+Q: Describe the concept of boosting and how it differs from bagging.
+A: Boosting sequentially trains models to correct errors, while bagging trains models in parallel and averages them.
+
+Q: Explain how neural networks are trained using backpropagation.
+A: Backpropagation adjusts weights by calculating the gradient of the loss function with respect to the network's weights.
+
+Q: How do support vector machines use kernel functions?
+A: Kernel functions allow support vector machines to find nonlinear decision boundaries by mapping data into higher dimensions.
+
+Q: What is gradient boosting, and how does it work?
+A: Gradient boosting trains models sequentially, each new model correcting the residuals of previous models to improve accuracy.
+
+Q: What are ensemble learning techniques, and how do they improve model performance?
+A: Ensemble learning combines multiple models to reduce overfitting and improve predictive performance.
+
+Q: Explain the concept of overfitting and methods to prevent it.
+A: Overfitting happens when a model learns noise in the training data. Regularization, cross-validation, and pruning can help prevent it.

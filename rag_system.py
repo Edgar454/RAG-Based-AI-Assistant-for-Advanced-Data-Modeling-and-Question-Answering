@@ -1,7 +1,7 @@
 import os
 from langchain_community.document_loaders import PyPDFDirectoryLoader
-from langchain_experimental.text_splitter import SemanticChunker
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_text_splitters  import RecursiveCharacterTextSplitter
+from langchain_community.embeddings  import OllamaEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.prompts import PromptTemplate
 from langchain_community.llms.ollama import Ollama
@@ -11,32 +11,45 @@ from langchain.chains.combine_documents.stuff import StuffDocumentsChain
 import pickle  # For metadata storage
 
 class RAG_System():
-    def __init__(self, data_directory, db_path):
+    def __init__(self, db_path, data_directory= None ,llm_model="llama3.2:1b" , embedding_model= "nomic-embed-text"):
         self.data_dir = data_directory
         self.db_path = db_path
-        self.embedding_model = "llama3.2"
-        self.llm_model = "llama3.2:1b"
-
-        # Load documents
-        pages = self._load_documents()
-        self.chunks = self._document_splitter(pages)
-        self.chunks = self._get_chunk_ids(self.chunks)
-
-        # Initialize the vector database
-        print('Initializing the vector database')
-        self.vectordb = self._initialize_vectorDB()
-        print('Initialization complete')
+        self.embedding_model = embedding_model
+        self.llm_model = llm_model
 
         self.model = Ollama(model=self.llm_model)
 
         self.prompt_template = """1. Use the following pieces of context to answer the question at the end.
-                                   2. If you don't know the answer, just say "I don't know" but don't make up an answer.
-                                   3. Keep the answer crisp and limited to 3-4 sentences.
-                                   Context: {context}
-                                   Question: {question}
-                                   Helpful Answer:"""
+                                    2. If you don't know the answer, just say "I don't know" but don't make up an answer.
+                                    3. Keep the answer crisp and limited to 3-4 sentences.
+                                    4. Use the style of answers shown in the following examples.
 
-        self._setup_collection()
+                                    Examples:
+                                    Q: What is feature engineering, and why is it important in machine learning?
+                                    A: Feature engineering involves creating features from raw data to help machine learning models perform better.
+
+                                    Q: How does binarization transform numerical features?
+                                    A: Binarization converts numerical features into binary values, usually 0 and 1, based on a threshold.
+
+                                    Context: {context}
+                                    Question: {question}
+                                    Helpful Answer:
+                                    """
+
+        # Load documents
+        if self.data_dir is not None :
+            pages = self._load_documents()
+            self.chunks = self._document_splitter(pages)
+
+            # Initialize the vector database
+            print('Initializing the vector database')
+            self.vectordb = self._initialize_vectorDB()
+            print('Initialization complete')
+
+            self._setup_collection()
+        else :
+            self.vectordb = self._initialize_vectorDB()
+
         self.build_the_chain()
 
     def _setup_collection(self):
@@ -51,21 +64,21 @@ class RAG_System():
         chunks_to_add = [i for i in self.chunks if i.metadata.get('chunk_id') not in ids_in_db]
 
         if chunks_to_add:
-            # Generate embeddings for the chunks that need to be added
-            #embeddings = self._get_embedding_func()  # Get the embedding function
-
-            # Generate embeddings for the chunks
-            #vectors_to_add = [embeddings.embed_query(i.page_content) for i in chunks_to_add]  # Compute embeddings
-            #ids_to_add = [i.metadata['chunk_id'] for i in chunks_to_add]
-            #metadata_to_add = [i.metadata for i in chunks_to_add]
-
             # Add new vectors to FAISS
             self.vectordb.add_documents(chunks_to_add)
             print(f"Added {len(chunks_to_add)} records to the FAISS DB")
 
+            # Extract metadata for the added chunks
+            new_metadata = {i.metadata['chunk_id']: i.metadata for i in chunks_to_add}
+
+            # Update existing metadata with new metadata
+            existing_metadata.update(new_metadata)
+
+            # Save the updated metadata
+            self._save_metadata(existing_metadata)
+
         # Save the updated FAISS index
         self.vectordb.save_local(self.db_path)
-
 
     def _get_chunk_ids(self, chunks):
         prev_page_id = None
@@ -120,16 +133,23 @@ class RAG_System():
         return pages
     
     def _document_splitter(self, documents):
-        splitter = SemanticChunker(self._get_embedding_func())
+        splitter = RecursiveCharacterTextSplitter(
+            # Set a really small chunk size, just to show.
+            chunk_size=100,
+            chunk_overlap=20,
+            length_function=len,
+            is_separator_regex=False,
+        )
+        
         chunks = splitter.split_documents(documents)
         return self._get_chunk_ids(chunks)  # Get chunk IDs after splitting
     
     def _get_embedding_func(self):
-        embeddings = HuggingFaceEmbeddings()
+        embeddings = OllamaEmbeddings(model = self.embedding_model)
         return embeddings
     
     def _initialize_vectorDB(self):
-        if os.path.exists(self.db_path):
+        if self.data_dir is None or os.path.exists(self.db_path):
             # Load the existing FAISS vector store if it exists
             print(f"Loading existing FAISS vector store from {self.db_path}")
             vector_store = FAISS.load_local(self.db_path, self._get_embedding_func() , allow_dangerous_deserialization=True)
