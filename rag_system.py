@@ -1,4 +1,6 @@
 import os
+from preprocess import load_and_process_document
+
 from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain_text_splitters  import RecursiveCharacterTextSplitter
 from langchain_community.embeddings  import OllamaEmbeddings
@@ -100,7 +102,7 @@ class RAG_System():
         return chunks
     
     def _intialize_retriever(self):
-        retriever = self.vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+        retriever = self.vectordb.as_retriever(search_type="mmr", search_kwargs={"k": 5})
         return retriever
     
     def build_the_chain(self):
@@ -128,10 +130,9 @@ class RAG_System():
         return self.qa(question)['result']
 
     def _load_documents(self):
-        loader = PyPDFDirectoryLoader(self.data_dir)
-        pages = loader.load()
+        pages = load_and_process_document(self.data_dir)
         return pages
-    
+
     def _document_splitter(self, documents):
         splitter = RecursiveCharacterTextSplitter(
             # Set a really small chunk size, just to show.

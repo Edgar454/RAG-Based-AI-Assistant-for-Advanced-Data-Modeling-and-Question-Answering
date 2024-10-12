@@ -3,10 +3,12 @@
 
 This project is an **AI-powered assistant** designed to assist data scientists and machine learning practitioners in improving their modeling processes. The assistant offers **suggestions**, **tips**, and **examples of feature engineering** and other techniques to enhance data modeling .
 
+![](FeatGuru.PNG)
+
 Built on top of a **Retrieval-Augmented Generation (RAG)** system, this assistant combines several advanced technologies:
 - **FAISS Vector Database**: Efficiently stores and retrieves contextual information.
 - **Sentence Transformer**: Converts text into vector embeddings for similarity search.
-- **LLAMA 3.2**: A large language model that drives the conversation and generates responses based on the retrieved context.
+- **QWEN 2.5**: A large language model that drives the conversation and generates responses based on the retrieved context.
 
 By leveraging these components, the assistant can provide actionable insights to help users optimize their data models !
 
@@ -16,7 +18,7 @@ By leveraging these components, the assistant can provide actionable insights to
 - **AI-Powered Suggestions**: Receive tips on feature engineering, data preprocessing, and model optimization.
 - **Question-Answering (QA)**: Ask questions and get answers based on retrieved data.
 - **RAG System**: Combines retrieval of relevant chunks from a knowledge base with generative AI responses.
-- **FAISS and LLAMA Integration**: Fast retrieval with FAISS and high-quality responses with LLAMA 3.2.
+- **FAISS and QWEN Integration**: Fast retrieval with FAISS and high-quality responses with QWEN 2.5.
 
 
 
@@ -55,7 +57,7 @@ poetry install
 4. Run the assistant:
 
 ```bash
-  python app.py
+  streamlit run app.py
 ```
 
 Once the assistant is running, you can start asking questions and receiving data modeling tips or feature engineering examples to improve your machine learning models.

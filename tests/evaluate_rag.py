@@ -41,8 +41,7 @@ response_times = []
 
 # Function to evaluate the RAG system
 def evaluate_rag(eval_path = "eval.csv"):
-    rag_system = RAG_System(db_path="M:/Youtube_Course/Personnal_projects/LLM_and_NLP/RAG_Research/faiss.db" ,
-                            data_directory= "M:/Youtube_Course/Personnal_projects/LLM_and_NLP/RAG_Research/Documents")
+    rag_system = RAG_System(db_path="M:/Youtube_Course/Personnal_projects/LLM_and_NLP/RAG_Research/faiss.db",llm_model = "qwen2.5:1.5b" )
 
     for question, ground_truth in tqdm(qa_pairs.items()):
         start_time = time.time()
